@@ -1,0 +1,5 @@
+<form action="{%url 'create-user-contact'%}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p}}
+    <input type="submit">
+</form>
