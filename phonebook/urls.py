@@ -32,4 +32,9 @@ urlpatterns = [
     path(
         "phonebook/<int:pk>", views.ContactDetailView.as_view(), name="phonebook-detail"
     ),
+    path(
+        "phonebook/<int:pk>/update",
+        views.UpdateContactView.as_view(),
+        name="update-contact",
+    ),
 ]

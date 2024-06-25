@@ -4,7 +4,9 @@ from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.response import HttpResponse
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
+
+# from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
 from .forms import *
 from django.shortcuts import redirect
@@ -75,3 +77,14 @@ class ContactDetailView(LoginRequiredMixin, DetailView):
             return super().get_object()
         except:
             raise Exception("Contact with this detail does not exists")
+
+
+class UpdateContactView(LoginRequiredMixin, UpdateView):
+
+    model = Contact
+    form_class = UpdateContactForm
+    template_name = "phonebook/update_contact.html"
+
+    def get_success_url(self):
+        contact = self.object
+        return reverse_lazy("phonebook-detail", kwargs={"pk": contact.pk})

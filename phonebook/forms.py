@@ -4,6 +4,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 
+class UpdateContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = "__all__"
+        exclude = ("user",)
+
+
 class CreateUserContactForm(forms.ModelForm):
     class Meta:
         model = Contact

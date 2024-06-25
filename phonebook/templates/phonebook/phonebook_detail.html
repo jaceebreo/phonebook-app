@@ -12,45 +12,33 @@
             <a class="navbar-brand" href="{% url 'homepage'%}">YOUR PHONEBOOK</a>
         </div>
     </nav>
-    <div class="table-responsive bg-dark container" style="height: 800px; overflow-y: auto;">
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Company</th>
-            <th scope="col">Telephone</th>
-            <th scope="col">Mobile</th>
-            </tr>
-        </thead>
-        <tbody class="overflow-auto">
-            <tr>
-                <form method="post" action="{% url 'update-contact' object.id %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ object.first_name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ object.last_name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company</label>
-                        <input type="text" class="form-control" id="company" name="company" value="{{ object.company }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="telephone">Telephone</label>
-                        <input type="text" class="form-control" id="telephone" name="telephone" value="{{ object.telephone_number }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="mobile">Mobile</label>
-                        <input type="text" class="form-control" id="mobile" name="mobile" value="{{ object.mobile_phone_number }}">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </tr>
-        </tbody>
-        </table>
+    <div class="table-responsive bg-dark container" style="height: 800px; width:500px; overflow-y: auto;">
+        {% comment %} <form method="post" id="contactForm"> {% endcomment %}
+            {% comment %} {% csrf_token %} {% endcomment %}
+            <div class="form-group">
+                <label class="text-light" for="{{object.first_name.label}}">First Name</label>
+                <input type="text" class="form-control" value="{{ object.first_name }}" disabled>
+            </div>
+            <div class="form-group mt-3">
+                <label class="text-light" for="{{object.last_name.label}}">Last Name</label>
+                <input type="text" class="form-control" value="{{ object.last_name }}" disabled>
+            </div>
+            <div class="form-group mt-3">
+                <label class="text-light" for="{{object.company.label}}">Company</label>
+                <input type="text" class="form-control" id="company" name="company" value="{{ object.company }}" disabled>
+            </div>
+            <div class="form-group mt-3">
+                <label class="text-light" for="{{object.telephone_number.label}}">Telephone</label>
+                <input type="text" class="form-control" id="telephone" name="telephone" value="{{ object.telephone_number }}" disabled>
+            </div>
+            <div class="form-group mt-3">
+                <label class="text-light" for="{{object.mobile_phone_number.label}}">Mobile</label>
+                <input type="text" class="form-control" id="mobile" name="mobile" value="{{ object.mobile_phone_number }}" disabled>
+            </div>
+            <button type="button" id="updateButton" class="btn btn-secondary mt-4"><a type="button" href="{% url 'update-contact' object.id %}"  style="color: white; text-decoration: none;">Update</a></button>
+            {% comment %} <button type="submit" id="saveButton" class="btn btn-success mt-4" style="margin-left: 10px;" disabled>Save</button> {% endcomment %}
+            <button type="submit" class="btn btn-danger mt-4" style="margin-left: 10px;"><a type="button" href="{% url 'update-contact' object.id %}"  style="color: white; text-decoration: none;">Delete</a></button>
     </div>
 </body>
 </html>
+
