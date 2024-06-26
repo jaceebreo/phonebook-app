@@ -1,7 +1,27 @@
 from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
-from django.contrib.auth.models import User
+from user.models import User
+
+REGION_CHOICES = [
+    ("I", "Ilocos Region"),
+    ("II", "Cagayan Valley"),
+    ("III", "Central Luzon"),
+    ("IV-A", "CALABARZON"),
+    ("IV-B", "MIMAROPA"),
+    ("V", "Bicol Region"),
+    ("VI", "Western Visayas"),
+    ("VII", "Central Visayas"),
+    ("VIII", "Eastern Visayas"),
+    ("IX", "Zamboanga Peninsula"),
+    ("X", "Northern Mindanao"),
+    ("XI", "Davao Region"),
+    ("XII", "SOCCSKSARGEN"),
+    ("XIII", "Caraga"),
+    ("CAR", "Cordillera Administrative Region"),
+    ("NCR", "National Capital Region"),
+    ("BARMM", "Bangsamoro Autonomous Region in Muslim Mindanao"),
+]
 
 
 class Contact(models.Model):
@@ -11,6 +31,7 @@ class Contact(models.Model):
         null=True,
         blank=True,
         unique=True,
+        related_name="contact",
     )
     first_name = models.CharField(
         max_length=20,
@@ -32,3 +53,7 @@ class Contact(models.Model):
         region="PH",
         verbose_name="Mobile Phone Number",
     )
+
+    region = models.CharField(max_length=10, choices=REGION_CHOICES)
+
+    date_created = models.DateTimeField(auto_now_add=True)

@@ -9,6 +9,7 @@ class ContactAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "telephone_number",
+        "date_created",
     )
 
 

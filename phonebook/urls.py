@@ -21,20 +21,31 @@ from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("phonebook", views.HomePageView.as_view(), name="homepage"),
+    path("", views.HomePageView.as_view(), name="homepage"),
     path("login", views.PhonebookLoginView.as_view(), name="login"),
+    path("logout", views.PhonebookLogoutView.as_view(), name="logout"),
     path("register", views.SignupView.as_view(), name="register"),
     path(
         "contact/user/new",
-        views.CreateUserContactForm.as_view(),
+        views.CreateUserContactView.as_view(),
         name="create-user-contact",
     ),
     path(
-        "phonebook/<int:pk>", views.ContactDetailView.as_view(), name="phonebook-detail"
+        "contact/new",
+        views.CreateContactView.as_view(),
+        name="create-contact",
+    ),
+    path(
+        "phonebook/<int:pk>", views.ContactDetailView.as_view(), name="detail-contact"
     ),
     path(
         "phonebook/<int:pk>/update",
         views.UpdateContactView.as_view(),
         name="update-contact",
+    ),
+    path(
+        "phonebook/<int:pk>/delete",
+        views.DeleteContactView.as_view(),
+        name="delete-contact",
     ),
 ]

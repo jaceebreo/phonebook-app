@@ -1,9 +1,26 @@
-<html>
-<form method="POST">
-{% csrf_token %}
-{{form.as_p}}
-<input type="submit"/>
-</form>
-
-
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <form method="POST">
+    {% csrf_token %}
+    <div class="container w-50">
+        {% if form.errors %}
+        <div class="alert alert-danger w-50">
+            <strong>Error!</strong>
+            <ul>
+                Please enter a correct username and password.
+                Note that both fields may be case-sensitive. 
+            </ul>
+            </div>
+        {% endif %}
+        <div class="input-group w-50">
+            <span class="input-group-text">Username</span>
+            <input type="text" id="{{ form.username.id }}" name={{ form.username.name }} class="form-control" >
+        </div>
+        <div class="input-group w-50 mt-3">
+            <span class="input-group-text">Password</span>
+            <input type="password" id="{{ form.password.id }}" name={{ form.password.name }} class="form-control" >
+        </div>
+        <button class="btn btn-primary mt-3 w-25" type="submit"/>Login</button>
+    </form>
+    </div>
+{% endblock %}

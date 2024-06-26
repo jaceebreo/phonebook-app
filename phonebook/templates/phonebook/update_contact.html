@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{% block title %}{% endblock %}</title>
-  {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
-</head>
-<body class="bg-dark">
-    <nav class="navbar navbar-dark bg-dark mt-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'homepage' %}">YOUR PHONEBOOK</a>
-        </div>
-    </nav>
+{% extends "base.html" %}
+{% block content %}
     <div class="table-responsive bg-dark container" style="height: 800px; width:500px; overflow-y: auto;">
         <form method="POST" action="">
             {% csrf_token %}
@@ -47,10 +35,17 @@
                 <label for="{{form.mobile_phone_number.label}}" style="{% if form.errors.mobile_phone_number %} color: #f5c6cb; {% else %} color: white;{% endif %}">Mobile</label>
                 <input type="text" class="form-control {% if form.errors.mobile_phone_number %} is-invalid {% endif %}" id="{{form.mobile_phone_number.id}}" name="{{form.mobile_phone_number.name}}" value="{{ form.mobile_phone_number.value }}">
             </div>
-            <button type="button" id="updateButton" class="btn btn-secondary mt-4">Back</button>
+            <div class="form-group mt-3">   
+                <label for="{{form.region.label}}" style="{% if form.errors.region %} color: #f5c6cb; {% else %} color: white;{% endif %}">Region</label>              
+                <select class="form-select" id="{{form.region.id}}" name="{{form.region.name}}" value="{{ form.region.value }}">
+                    {% for key, value in region_choices.items %}
+                    <option {% if form.region.value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" id="updateButton" class="btn btn-secondary mt-4"><a type="button" href="{% url 'detail-contact' object.id %}"  style="color: white; text-decoration: none;">Back</a></button>
             <button type="submit" id="saveButton" class="btn btn-success mt-4" style="margin-left: 10px;">Save</button>
          </form>        
     </div>
-</body>
-</html>
+{% endblock %}
 

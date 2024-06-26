@@ -1,97 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{% block title %}{% endblock %}</title>
-  {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
-  {% comment %} <style>
-    .fixed-pagination {
-      position: fixed;
-      bottom: 20px; /* Adjust as needed */
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000; 
-      width: auto; 
-      padding: 10px;
-      background-color: #343a40;
-    }
-    </style> {% endcomment %}
-</head>
-<body class="bg-dark">
-    <nav class="navbar navbar-dark bg-dark mt-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'homepage'%}">YOUR PHONEBOOK</a>
-        </div>
-    </nav>
+{% extends "base.html" %}
+    {% block content %}
         <div class="container mt-4">
             <form method="GET" action="" class="mb-3">
             {% csrf_token %}
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." name="search_query" value="{{ request.GET.q }}">
-                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                <div class="container">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." name="search_query">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                    <div class="input-group mt-4">                 
+                        <select class="form-select" name="region_filter">
+                            <option value="None" {% if not region_choices_value %} selected {% endif %}> Filter by Region</option>
+                            {% for key, value in region_choices.items %}
+                            <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-secondary" type="submit">Filter</button>
+                    </div>
                 </div>
             </form>
         </div>
-    <div class="table-responsive bg-dark container" style="height: 800px; overflow-y: auto;">
-    <table class="table table-dark table-striped table-hover">
-        <thead>
-            <tr>
-            <th></th>
-            <th scope="col">Name</th>
-            <th scope="col">Company</th>
-            <th scope="col">Telephone</th>
-            <th scope="col">Mobile</th>
-            </tr>
-        </thead>
-        <tbody class="overflow-auto">
-            {% for contact in object_list%}
-            {% comment %} <a href="{% url 'phonebook-detail' contact.id%}"> {% endcomment %}
-            <tr data-url="{% url 'phonebook-detail' contact.id %}">
-                <td>{{ forloop.counter }}</td>
-                <td>{{ contact.first_name }} {{ contact.last_name}}</td>
-                <td>{{ contact.company }}</td>
-                <td>{{contact.telephone_number}}</td>
-                <td>{{contact.mobile_phone_number}}</td>
-            </tr>
-            {% comment %} </a> {% endcomment %}
-            {% endfor %}
-        </tbody>
-        </table>
-        <ul class="pagination justify-content-center fixed-pagination">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Prev</a>
+        <div class="table-responsive bg-dark container" style="height: 800px; overflow-y: auto;">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                <th></th>
+                <th scope="col">Name</th>
+                <th scope="col">Company</th>
+                <th scope="col">Region</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">Mobile</th>
+                </tr>
+            </thead>
+            <tbody class="overflow-auto">
+                {% if not has_contact_details %}
+                <tr data-url="{% url 'create-user-contact' %}">
+                    <td></td>
+                    <td><strong>+ Add My Own Contact Details</strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endif %}
+                {% for contact in object_list%}
+                <tr data-url="{% url 'detail-contact' contact.id %}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ contact.first_name }} {{ contact.last_name}}</td>
+                    <td>{{ contact.company }}</td>
+                    <td>{{ contact.region }}</td>
+                    <td>{{contact.telephone_number}}</td>
+                    <td>{{contact.mobile_phone_number}} </td>
+                </tr>
+                {% endfor %}    
+                <tr  data-url="{% url 'create-contact' %}">
+                    <td></td>
+                    <td><strong>+ Add New Contact</strong></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+            </table>
+            <ul class="pagination justify-content-center fixed-pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Prev</a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item disabled">
+                    <span class="page-link text-muted">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
                 </li>
-            {% endif %}
-            
-            <li class="page-item disabled">
-                <span class="page-link text-muted">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                </span>
-            </li>
-            
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
-                </li>
-            {% endif %}
-            </ul>
-    </div>
-</body>
-</html>
-
-<script>
-    // JavaScript to handle row click event
-    document.addEventListener('DOMContentLoaded', function() {
-      let rows = document.querySelectorAll('tbody tr');
-      rows.forEach(row => {
-        row.addEventListener('click', function() {
-          let url = this.getAttribute('data-url');
-          if (url) {
-            window.location.href = url;
-          }
-        });
-      });
-    });
-  </script>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
+                    </li>
+                {% endif %}
+                </ul>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              let rows = document.querySelectorAll('tbody tr');
+              rows.forEach(row => {
+                row.addEventListener('click', function() {
+                  let url = this.getAttribute('data-url');
+                  if (url) {
+                    window.location.href = url;
+                  }
+                });
+              });
+            });
+        </script>
+    {% endblock %}

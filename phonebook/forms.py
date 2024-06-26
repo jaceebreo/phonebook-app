@@ -11,6 +11,13 @@ class UpdateContactForm(forms.ModelForm):
         exclude = ("user",)
 
 
+class CreateContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = "__all__"
+        exclude = ("user",)
+
+
 class CreateUserContactForm(forms.ModelForm):
     class Meta:
         model = Contact
