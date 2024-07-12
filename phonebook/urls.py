@@ -21,10 +21,26 @@ from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.HomePageView.as_view(), name="homepage"),
-    path("login", views.PhonebookLoginView.as_view(), name="login"),
-    path("logout", views.PhonebookLogoutView.as_view(), name="logout"),
-    path("register", views.SignupView.as_view(), name="register"),
+    path(
+        "",
+        views.HomePageView.as_view(),
+        name="homepage",
+    ),
+    path(
+        "login",
+        views.PhonebookLoginView.as_view(),
+        name="login",
+    ),
+    path(
+        "logout",
+        views.PhonebookLogoutView.as_view(),
+        name="logout",
+    ),
+    path(
+        "register",
+        views.SignupView.as_view(),
+        name="register",
+    ),
     path(
         "contact/user/new",
         views.CreateUserContactView.as_view(),
@@ -36,7 +52,9 @@ urlpatterns = [
         name="create-contact",
     ),
     path(
-        "phonebook/<int:pk>", views.ContactDetailView.as_view(), name="detail-contact"
+        "phonebook/<int:pk>",
+        views.ContactDetailView.as_view(),
+        name="detail-contact",
     ),
     path(
         "phonebook/<int:pk>/update",
@@ -47,5 +65,10 @@ urlpatterns = [
         "phonebook/<int:pk>/delete",
         views.DeleteContactView.as_view(),
         name="delete-contact",
+    ),
+    path(
+        "phonebook/about",
+        views.AboutView.as_view(),
+        name="about",
     ),
 ]

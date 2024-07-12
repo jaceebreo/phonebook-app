@@ -1,13 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models.base import Model as Model
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic import (
+    CreateView,
+    ListView,
+    DetailView,
+    UpdateView,
+    TemplateView,
+)
 from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 from .forms import *
 from django.shortcuts import redirect
 from django.db.models import Q
 from .models import REGION_CHOICES
+
+
+class AboutView(TemplateView):
+    template_name = "phonebook/about.html"
 
 
 class DeleteContactView(LoginRequiredMixin, DeleteView):
