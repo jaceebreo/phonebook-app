@@ -1,0 +1,25 @@
+What is poetry
+
+
+
+TODO:
+Add Regions == DONE
+Delete == Done
+Add Faker for Regions == Done 
+Add Filter by Region == Done
+
+Add Static files  == Done
+
+Add Steps from signup to login and filter
+
+
+Step 1:
+Register
+
+Step 2:
+login
+
+Step 3: 
+Add Own contact details
+
+Step 4:
