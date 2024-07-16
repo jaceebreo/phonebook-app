@@ -1,7 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models.base import Model as Model
+from django.http import JsonResponse
+
 from django.views.generic import (
+    View,
     CreateView,
     ListView,
     DetailView,
@@ -116,33 +119,78 @@ class PhonebookLogoutView(LogoutView):
     next_page = reverse_lazy("login")
 
 
+class DynamicSearchView(View):
+    def get(self, request):
+        search_query = self.request.GET.get("search_query")
+        if search_query:
+            data = []
+            queryset = Contact.objects.filter(
+            Q(first_name__icontains=search_query)
+            | Q(last_name__icontains=search_query)
+            | Q(company__icontains=search_query)
+                )
+            for contact in queryset:
+                contact_data = {
+                    "name": f"{contact.first_name} {contact.last_name}",
+                    'company': contact.company,
+                    'region': contact.region,
+                    'telephone_number': str(contact.telephone_number),
+                    'mobile_phone_number': str(contact.mobile_phone_number),
+                }
+                data.append(contact_data)
+        else:
+            data = []
+            queryset = Contact.objects.all()
+            for contact in queryset:
+                contact_data = {
+                    "name": f"{contact.first_name} {contact.last_name}",
+                    'company': contact.company,
+                    'region': contact.region,
+                    'telephone_number': str(contact.telephone_number),
+                    'mobile_phone_number': str(contact.mobile_phone_number),
+                }
+                data.append(contact_data)
+        return JsonResponse(data, safe=False)
+    
+class DynamicHomepageView(LoginRequiredMixin, TemplateView):
+    login_url = "/login"
+    template_name = "phonebook/phonebook_homepage2.html"
+
 class HomePageView(LoginRequiredMixin, ListView):
     login_url = "/login"
     template_name = "phonebook/phonebook_homepage.html"
 
     model = Contact
-    paginate_by = 15
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search_query")
-        region_filter_value = self.request.GET.get("region_filter")
+        # region_filter_value = self.request.GET.get("region_filter")
 
-        if search_query and region_filter_value != "None":
-            queryset = queryset.filter(
-                Q(first_name__icontains=search_query)
-                | Q(last_name__icontains=search_query)
-                | Q(company__icontains=search_query),
-                region=region_filter_value,
-            )
-        elif search_query:
+        if search_query:
             queryset = queryset.filter(
                 Q(first_name__icontains=search_query)
                 | Q(last_name__icontains=search_query)
                 | Q(company__icontains=search_query)
             )
-        elif region_filter_value:
-            queryset = queryset.filter(region=region_filter_value)
+
+
+        # if search_query and region_filter_value != "None":
+        #     queryset = queryset.filter(
+        #         Q(first_name__icontains=search_query)
+        #         | Q(last_name__icontains=search_query)
+        #         | Q(company__icontains=search_query),
+        #         region=region_filter_value,
+        #     )
+        # elif search_query:
+        #     queryset = queryset.filter(
+        #         Q(first_name__icontains=search_query)
+        #         | Q(last_name__icontains=search_query)
+        #         | Q(company__icontains=search_query)
+        #     )
+        # elif region_filter_value:
+        #     queryset = queryset.filter(region=region_filter_value)
 
         return queryset.order_by("-date_created")
 

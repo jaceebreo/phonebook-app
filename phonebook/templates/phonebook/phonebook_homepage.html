@@ -1,18 +1,24 @@
 {% extends "base.html" %}
+{% load static %}
+
     {% block content %}
         <div class="container mt-4">
             <form method="GET" action="" class="mb-3">
             {% csrf_token %}
                 <div class="container">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." name="search_query">
+                        <input type="text" class="form-control" id="search-query" placeholder="Search..." name="search_query">
                         <button class="btn btn-outline-secondary" type="submit">Search</button>
                     </div>
                     <div class="input-group mt-4">                 
                         <select class="form-select" name="region_filter">
-                            <option value="None" {% if not region_choices_value %} selected {% endif %}> Filter by Region</option>
+                            <option value="None" {% if not region_choices_value %} selected {% endif %}>
+                                Filter by Region 
+                            </option>
                             {% for key, value in region_choices.items %}
-                            <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
+                            <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}">
+                                Region {{ key }} {{ value }}
+                            </option>
                             {% endfor %}
                         </select>
                         <button class="btn btn-outline-secondary" type="submit">Filter</button>
@@ -66,23 +72,24 @@
             <ul class="pagination justify-content-center fixed-pagination">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Prev</a>
+                        <a href="?search_query={{ request.GET.search_query|urlencode }}&page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Prev</a>
                     </li>
                 {% endif %}
                 
                 <li class="page-item disabled">
                     <span class="page-link text-muted">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                     </span>
                 </li>
                 
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
+                        <a href="?search_query={{ request.GET.search_query|urlencode }}&page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
                     </li>
                 {% endif %}
-                </ul>
+            </ul>
         </div>
+        <script src="{% static 'js/search_script.js' %}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
               let rows = document.querySelectorAll('tbody tr');

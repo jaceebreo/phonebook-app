@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="container mt-4">
+  <form method="GET" action="" class="mb-3">
+    {% csrf_token %}
+    <div class="container">
+      <div>
+        <input
+          type="text"
+          class="form-control"
+          id="search-query"
+          placeholder="Search..."
+          name="search_query"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+<div class="container bg-dark" style="height: 800px; overflow-y: auto">
+  <table class="table table-responsive table-dark table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Company</th>
+        <th scope="col">Region</th>
+        <th scope="col">Telephone</th>
+        <th scope="col">Mobile</th>
+      </tr>
+    </thead>
+    <tbody class="overflow-auto" id="contact-table-body">
+      {% if not has_contact_details %}
+      <tr data-url="{% url 'create-user-contact' %}">
+        <td><strong>+ Add My Own Contact Details</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endif %}
+      <tr data-url="{% url 'create-contact' %}">
+        <td><strong>+ Add New Contact</strong></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script src="{% static 'js/search_script.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let rows = document.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+      row.addEventListener("click", function () {
+        let url = this.getAttribute("data-url");
+        if (url) {
+          window.location.href = url;
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

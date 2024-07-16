@@ -21,6 +21,8 @@ from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("hompage2/", views.DynamicHomepageView.as_view(), name="homepage2"),
+    path("search", views.DynamicSearchView.as_view(), name="search-contacts"),
     path(
         "",
         views.HomePageView.as_view(),
@@ -71,4 +73,7 @@ urlpatterns = [
         views.AboutView.as_view(),
         name="about",
     ),
+    
+
+
 ]
