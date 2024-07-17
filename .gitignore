@@ -1,1 +1,59 @@
+Creating a .gitignore File for Your Django Project
+A .gitignore file tells Git which files and directories to ignore when committing changes. Here's a basic .gitignore file tailored for a Django project:
+
+# Python
 __pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Django
+local_settings.py
+db.sqlite3
+*.log
+*.pot
+
+# Testing
+.tox/
+htmlcov/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# IDE/Editor settings
+.idea
+.vscode
+
+# Environment variables
+.env
