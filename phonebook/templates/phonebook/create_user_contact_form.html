@@ -1,43 +1,56 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-
-    <div class="container w-50">
+  <div class="container w-50">
     <form action="" method="POST">
-        {% csrf_token %}
-        {% if form.errors %}
+      {% csrf_token %}
+      {% if form.errors %}
         <div class="alert alert-danger">
-            <strong>Error!</strong> Please correct the following errors:
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li><strong>{{ field.label }}</strong>: {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-            </div>
-        {% endif %}
-        {% for form_field in form %}
-            {% if form_field.name != 'region' %}
-            <div class="form-group mt-3">
-                <label for="{{ form_field.label }}" style="{% if form_field.errors.name %} color: #f5c6cb; {% else %} color: white;{% endif %}">{{ form_field.label}}</label>
-                <input required type="text" class="form-control {% if form_field.errors.field %} is-invalid {% endif %}" id="id_{{ form_field.name }}" name="{{ form_field.name }}">
-            </div>
-            {% else %}
-            <div class="form-group mt-3">   
-                <label for="{{form_field.name}}" style="{% if form_field.errors.field %} color: #f5c6cb; {% else %} color: white;{% endif %}">Region</label>              
-                <select required class="form-select" id="id_{{ form_field.name }}" name="{{ form_field.name }}">
-                    <option>Select a Region</option>
-                    {% for key, value in region_choices.items %}
-                    <option style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-        {% endfor %}
-
-        <div class="form-group mt-3">   
-            <button type="submit" id="saveButton" class="btn btn-success mt-3 w-25" style="margin-left: 10px;">Save</button>
+          <strong>Error!</strong> Please correct the following errors:<ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>
+                  <strong>{{ field.label }}</strong>: {{ error }}
+                </li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
         </div>
+      {% endif %}
+      {% for form_field in form %}
+        {% if form_field.name != 'region' %}
+          <div class="form-group mt-3">
+            <label for="{{ form_field.label }}"
+              style="{% if form_field.errors.name %}
+                 color: #f5c6cb;
+              {% else %}
+                 color: black;
+              {% endif %}">
+              {{ form_field.label }}
+            </label>
+            <input required type="text" class="form-control {% if form_field.errors.field %} is-invalid {% endif %}" id="id_{{ form_field.name }}" name="{{ form_field.name }}" />
+          </div>
+        {% else %}
+          <div class="mt-3">
+            <label for="{{ form_field.name }}"
+              style="{% if form_field.errors.field %} 
+                 color: #f5c6cb;
+              {% else %}
+                 color: black;
+              {% endif %}">
+              Region
+            </label>
+            <select class="form-control" required id="id_{{ form_field.name }}" name="{{ form_field.name }}">
+              <option>Select a Region</option>
+              {% for key, value in region_choices.items %}
+                <option style="color: black;" value="{{ key }}">Region {{ key }} {{ value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endif %}
+      {% endfor %}
+      <div class="form-group mt-3">
+        <button type="submit" id="saveButton" class="btn btn-success mt-3 w-25">Save</button>
+      </div>
     </form>
-</div>
+  </div>
 {% endblock %}

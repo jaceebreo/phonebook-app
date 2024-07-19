@@ -17,7 +17,7 @@
             {% endif %}
         {% for form_field in form %}
             <div class="form-group mt-3">
-                <label for="{{ form_field.label }}" style="{% if form_field.errors.name %} color: #f5c6cb; {% else %} color: white;{% endif %}">{{ form_field.label}}</label>
+                <label for="{{ form_field.label }}" style="{% if form_field.errors.name %} color: #f5c6cb; {% endif %}">{{ form_field.label}}</label>
                 
                 {% if form_field.name != 'password1' and form_field.name != 'password2' %}
                 <input required type="text" class="form-control {% if form_field.errors.field %} is-invalid {% endif %}" id="id_{{ form_field.name }}" name="{{ form_field.name }}">

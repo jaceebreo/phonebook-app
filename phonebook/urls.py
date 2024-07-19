@@ -20,6 +20,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path("export", views.ExportView.as_view(), name="export"),
     path("admin/", admin.site.urls),
     path(
         "",

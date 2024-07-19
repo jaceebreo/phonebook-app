@@ -1,9 +1,23 @@
-<ul id="js-nav-menu" class="nav-menu">
+{% load static %}
+<ul id="js-nav-menu" class="nav-menu js-nav-built">
   <li class="nav-title">{{ project_name }}</li>
   <li>
     <a href="{% url 'homepage' %}" title="Home" data-filter-tags="home">
       <i class="fal fa-home-lg-alt"></i>
       <span class="nav-link-text" data-i18n="nav.home">Home</span>
+    </a>
+  </li>
+  <li>
+    <a href="/admin" title="Admin" data-filter-tags="admin">
+      <i class="fal fa-building"></i>
+      <span class="nav-link-text" data-i18n="nav.admin">Admin</span>
+      <ul>
+        <li>
+          <a href="intel_analytics_dashboard.html" title="Create Contact" data-filter-tags="create-contact" class=" waves-effect waves-themed">
+            <span class="nav-link-text">Create Contact</span>
+          </a>
+        </li>
+      </ul>
     </a>
   </li>
 </ul>

@@ -1,90 +1,121 @@
 {% extends "base.html" %}
     {% block content %}
-        <div class="container mt-4">
-            <form method="GET" action="" class="mb-3">
-            {% csrf_token %}
-                <div class="container">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." name="search_query">
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                    <div class="input-group mt-4">                 
-                        <select class="form-select" name="region_filter">
-                            <option value="None" {% if not region_choices_value %} selected {% endif %}> Filter by Region</option>
-                            {% for key, value in region_choices.items %}
-                            <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
-                            {% endfor %}
-                        </select>
-                        <button class="btn btn-outline-secondary" type="submit">Filter</button>
-                    </div>
-                </div>
-            </form>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+        <div class="container mt-1">
+            <div class="mt-4 mb-2">                 
+                <select class=" form-control p-2 select-custom-border" id="region-filter" name="region-filter">
+                    <option value="" {% if not region_choices_value %} selected {% endif %}> 
+                        Filter by Region
+                    </option>
+                    {% for key, value in region_choices.items %}
+                    <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >
+                        Region {{ key }} {{ value }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="table-responsive bg-dark container" style="height: 800px; overflow-y: auto;">
-        <table class="table table-dark table-striped table-hover">
-            <thead>
-                <tr>
-                <th></th>
-                <th scope="col">Name</th>
-                <th scope="col">Company</th>
-                <th scope="col">Region</th>
-                <th scope="col">Telephone</th>
-                <th scope="col">Mobile</th>
-                </tr>
-            </thead>
-            <tbody class="overflow-auto">
-                {% if not has_contact_details %}
-                <tr data-url="{% url 'create-user-contact' %}">
-                    <td></td>
-                    <td><strong>+ Add My Own Contact Details</strong></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                {% endif %}
-                {% for contact in object_list%}
-                <tr data-url="{% url 'detail-contact' contact.id %}">
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ contact.first_name }} {{ contact.last_name}}</td>
-                    <td>{{ contact.company }}</td>
-                    <td>{{ contact.region }}</td>
-                    <td>{{contact.telephone_number}}</td>
-                    <td>{{contact.mobile_phone_number}} </td>
-                </tr>
-                {% endfor %}    
-                <tr  data-url="{% url 'create-contact' %}">
-                    <td></td>
-                    <td><strong>+ Add New Contact</strong></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
+        <div class="container" style="height: 800px; overflow-y: auto;">
+            <table id="contact-table" class="table tbg-info-900 table-bordered table-hover m-0 mb-2">
+                <thead class="bg-primary-500">
+                    <tr>
+                    <th></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Region</th>
+                    <th data-orderable="false" scope="col">Telephone</th>
+                    <th data-orderable="false" scope="col">Mobile</th>
+                    </tr>
+                </thead>
+                <tbody class="overflow-auto">
+                    {% for contact in object_list%}
+                    <tr data-url="{% url 'detail-contact' contact.id %}">
+                        <td>{{ contact.id }}</td>
+                        <td>{{ contact.first_name }} {{ contact.last_name}}</td>
+                        <td>{{ contact.company }}</td>
+
+                        <td>{{ contact.region}}</td>
+                        <td>{{contact.telephone_number}}</td>
+                        <td>{{contact.mobile_phone_number}} </td>
+                    </tr>
+                    {% endfor %}    
+                </tbody>
+                <tfoot>
+                    <tr  data-url="{% url 'create-contact' %}">
+                        <td></td>
+                        <td><strong>+ Add New Contact</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% if not has_contact_details %}
+                    <tr data-url="{% url 'create-user-contact' %}">
+                        <td></td>
+                        <td><strong>+ Add My Contact Details</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
+                </tfoot>
             </table>
-            <ul class="pagination justify-content-center fixed-pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Prev</a>
-                    </li>
-                {% endif %}
-                
-                <li class="page-item disabled">
-                    <span class="page-link text-muted">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
-                </li>
-                
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
-                    </li>
-                {% endif %}
-                </ul>
+            <button class="btn btn-primary" id="export-btn">Export to Excel</button>
+
         </div>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+             document.addEventListener('DOMContentLoaded', function() {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                function gatherTableData() {
+                    const tableData = [];
+                    document.querySelectorAll('#contact-table tbody tr').forEach(row => {
+                        const rowData = [];
+                        row.querySelectorAll('td').forEach(cell => {
+                            rowData.push(cell.textContent.trim());
+                        });
+                        tableData.push(rowData);
+                    });
+                    return tableData;
+                }
+    
+                function exportToExcel(data) {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+                    fetch('export', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken 
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'data.xlsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url); 
+                    })
+                    .catch(error => console.error('Error exporting data:', error));
+                }
+    
+                document.getElementById('export-btn').addEventListener('click', function() {
+                    const tableData = gatherTableData();
+                    exportToExcel(tableData);
+                });
+
               let rows = document.querySelectorAll('tbody tr');
               rows.forEach(row => {
                 row.addEventListener('click', function() {
@@ -94,6 +125,18 @@
                   }
                 });
               });
-            });
+
+              let rowsFooter = document.querySelectorAll('tfoot tr');
+              rowsFooter.forEach(row => {
+                row.addEventListener('click', function() {
+                  let url = this.getAttribute('data-url');
+                  if (url) {
+                    window.location.href = url;
+                  }
+                });
+              });
+            }); 
+
         </script>
+          
     {% endblock %}

@@ -106,6 +106,12 @@
       charset="utf-8"
       rel="stylesheet"
     />
+    <!-- ADDED JQUERY DATA TABLES-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css"
+    />
+
     <link href="{% static 'css/style.css' %}" />
     {% block extra_css %}{% endblock %}
     <style>
@@ -279,7 +285,7 @@
                   </span>
                 </a>
                 <span class="d-inline-block text-truncate text-truncate-sm"
-                  >{{ request.user.office_location }}</span
+                  >Metro Manila</span
                 >
               </div>
               <img
@@ -365,12 +371,6 @@
                 </li>
               </ul>
             </div>
-            <button
-              type="button"
-              class="btn btn-primary bg-trans-gradient waves-effect waves-themed"
-            >
-              {{ project_name }}
-            </button>
             <!-- DOC: mobile button appears during mobile width -->
             <div class="hidden-lg-up ml-2">
               <a
@@ -477,8 +477,7 @@
                       </span>
                       <div class="info-card-text">
                         <div class="fs-lg text-truncate text-truncate-lg">
-                          {{ request.user.first_name }} {{
-                          request.user.last_name }}
+                          {{ fullname }}
                         </div>
                         <span class="text-truncate text-truncate-md opacity-80"
                           >{{ request.user.position }}</span
@@ -503,73 +502,12 @@
                 </div>
               </div>
               <!-- country -->
-              <div>
-                <a
-                  href="#"
-                  data-toggle="dropdown"
-                  title="{{ request.user.first_name }}"
-                  class="header-icon d-flex align-items-center justify-content-center ml-2"
-                >
-                  <img
-                    src="{% if request.user.active_country.flag %}{{ request.user.active_country.flag.url }}{% else %}{% static 'img\default.png' %}{% endif %}"
-                    class="profile-image rounded-square"
-                    style="height: 20px; width: 20px"
-                    alt="Flag"
-                  />
-                </a>
-                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
-                  <div style="height: 500px; overflow-y: scroll">
-                    {% for country in request.user.countries.all %}
-                    <div class="dropdown-divider m-0"></div>
-                    <a
-                      class="dropdown-item"
-                      href="{% url 'generic:set-active-country' country.id %}"
-                    >
-                      <span data-i18n="drpdwn.fullscreen"
-                        >{{ country.country_name }} ({{ country.company_code
-                        }})</span
-                      >
-                      <img
-                        src="{% if country.flag %}{{ country.flag.url }}{% else %}{% static 'img\default.png' %}{% endif %}"
-                        class="profile-image rounded-square float-right fw-n"
-                        style="height: 20px; width: 20px"
-                        alt="Flag"
-                      />
-                    </a>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
             </div>
           </header>
           <!-- END Page Header -->
           <!-- BEGIN Page Content -->
           <!-- the #js-page-content id is needed for some plugins to initialize -->
           <main id="js-page-content" role="main" class="page-content">
-            <div class="alert alert-danger alert-dismissible fade show">
-              <button
-                type="button"
-                class="close"
-                data-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true"><i class="fal fa-times"></i></span>
-              </button>
-              <div class="d-flex align-items-center">
-                <div class="alert-icon width-8">
-                  <span class="icon-stack icon-stack-xl">
-                    <i class="base-2 icon-stack-3x color-danger-400"></i>
-                    <i class="base-10 text-white icon-stack-1x"></i>
-                    <i class="ni md-profile color-danger-800 icon-stack-2x"></i>
-                  </span>
-                </div>
-                <div class="flex-1 pl-1">
-                  <span class="h2"> {{ server_name }} Environment </span>
-                  <br />
-                  You're currently accessing {{ server_name }} environment.
-                </div>
-              </div>
-            </div>
             {% if breadcrumb %}
             <ol class="breadcrumb page-breadcrumb">
               {% for item in breadcrumb %} {% if forloop.last %}
@@ -1401,6 +1339,27 @@
       type="text/javascript"
       src="{% static 'js/ajax_modal.js' %}"
     ></script>
+    <script>
+      $(document).ready(function () {
+        const contactTable = document.getElementById("contact-table");
+
+        const regionFilter = document.getElementById("region-filter");
+        $(regionFilter).on("change", function () {
+          var filterValue = $(this).val();
+          if (filterValue) {
+            table
+              .columns(3)
+              .search("^" + filterValue + "$", true, false)
+              .draw();
+          } else {
+            table.columns(3).search("").draw();
+          }
+        });
+        var table = $(contactTable).DataTable({
+          order: [[0, "desc"]],
+        });
+      });
+    </script>
   </body>
   <!-- END Body -->
 </html>

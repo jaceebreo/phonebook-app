@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="table-responsive bg-dark container" style="height: 800px; width:500px; overflow-y: auto;">
+    <div class= "container" style="height: 600px; width:500px;">
         <form method="POST" action="">
             {% csrf_token %}
             {% if form.errors %}
@@ -16,35 +16,35 @@
                 </div>
             {% endif %}
             <div class="form-group">
-                <label for="{{form.first_name.label}}" style="{% if form.errors.first_name %} color: #f5c6cb; {% else %} color: white;{% endif %}">First Name</label>
+                <label for="{{form.first_name.label}}" style="{% if form.errors.first_name %} color: #f5c6cb; {% endif %}">First Name</label>
                 <input type="text" class="form-control {% if form.errors.first_name %} is-invalid {% endif %}" id="{{ form.first_name.id }}" name="{{form.first_name.name}}" value="{{ form.first_name.value }}">
             </div>
             <div class="form-group mt-3">
-                <label for="{{ form.last_name.label }}"style="{% if form.errors.last_name %} color: #f5c6cb; {% else %} color: white;{% endif %}">Last Name</label>
+                <label for="{{ form.last_name.label }}"style="{% if form.errors.last_name %} color: #f5c6cb; {% endif %}">Last Name</label>
                 <input type="text" class="form-control {% if form.errors.last_name %} is-invalid {% endif %}" id="{{form.last_name.id}}" name="{{form.last_name.name}}" value="{{ form.last_name.value }}">
             </div>
             <div class="form-group mt-3">
-                <label for="{{form.company.label}}"  style="{% if form.errors.company %} color: #f5c6cb; {% else %} color: white;{% endif %}">Company</label>
+                <label for="{{form.company.label}}"  style="{% if form.errors.company %} color: #f5c6cb; {% endif %}">Company</label>
                 <input type="text" class="form-control {% if form.errors.company %} is-invalid {% endif %} " id="{{form.company.id}}" name="{{form.company.name}}" value="{{ form.company.value }}">
             </div>
             <div class="form-group mt-3">
-                <label for="{{form.telephone_number.label}}"  style="{% if form.errors.telephone_number %} color: #f5c6cb; {% else %} color: white;{% endif %}">Telephone</label>
+                <label for="{{form.telephone_number.label}}"  style="{% if form.errors.telephone_number %} color: #f5c6cb; {% endif %}">Telephone</label>
                 <input type="text" class="form-control {% if form.errors.telephone_number %} is-invalid {% endif %}" id="{{form.telephone_number.id}}" name="{{form.telephone_number.name}}" value="{{ form.telephone_number.value }}">
             </div>
             <div class="form-group mt-3">
-                <label for="{{form.mobile_phone_number.label}}" style="{% if form.errors.mobile_phone_number %} color: #f5c6cb; {% else %} color: white;{% endif %}">Mobile</label>
+                <label for="{{form.mobile_phone_number.label}}" style="{% if form.errors.mobile_phone_number %} color: #f5c6cb; {% endif %}">Mobile</label>
                 <input type="text" class="form-control {% if form.errors.mobile_phone_number %} is-invalid {% endif %}" id="{{form.mobile_phone_number.id}}" name="{{form.mobile_phone_number.name}}" value="{{ form.mobile_phone_number.value }}">
             </div>
             <div class="form-group mt-3">   
-                <label for="{{form.region.label}}" style="{% if form.errors.region %} color: #f5c6cb; {% else %} color: white;{% endif %}">Region</label>              
-                <select class="form-select" id="{{form.region.id}}" name="{{form.region.name}}" value="{{ form.region.value }}">
+                <label for="{{form.region.label}}" style="{% if form.errors.region %} color: #f5c6cb; {% endif %}">Region</label>              
+                <select class="form-control" id="{{form.region.id}}" name="{{form.region.name}}" value="{{ form.region.value }}">
                     {% for key, value in region_choices.items %}
                     <option {% if form.region.value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >Region {{ key }} {{ value }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <button type="button" id="updateButton" class="btn btn-secondary mt-4"><a type="button" href="{% url 'detail-contact' object.id %}"  style="color: white; text-decoration: none;">Back</a></button>
-            <button type="submit" id="saveButton" class="btn btn-success mt-4" style="margin-left: 10px;">Save</button>
+            <a href="{% url 'detail-contact' object.id %}"  style="color: white; text-decoration: none;"><button type="button" class="btn btn-secondary mt-2">Back</button></a>
+            <button type="submit" id="saveButton" class="btn btn-success mt-2 ml-2">Save</button>
          </form>        
     </div>
 {% endblock %}
