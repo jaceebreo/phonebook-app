@@ -8,7 +8,7 @@
                         Filter by Region
                     </option>
                     {% for key, value in region_choices.items %}
-                    <option {% if region_choices_value == key %} selected {% endif %} style="color: black;" value="{{ key }}" >
+                    <option {% if region_choices_value == key %} selected {% endif %} value="{{ key }}" >
                         Region {{ key }} {{ value }}
                     </option>
                     {% endfor %}
@@ -33,10 +33,9 @@
                         <td>{{ contact.id }}</td>
                         <td>{{ contact.first_name }} {{ contact.last_name}}</td>
                         <td>{{ contact.company }}</td>
-
-                        <td>{{ contact.region}}</td>
-                        <td>{{contact.telephone_number}}</td>
-                        <td>{{contact.mobile_phone_number}} </td>
+                        <td>{{ contact.region }}</td>
+                        <td>{{ contact.telephone_number }}</td>
+                        <td>{{ contact.mobile_phone_number }} </td>
                     </tr>
                     {% endfor %}    
                 </tbody>
@@ -65,7 +64,7 @@
 
         </div>
         <script>
-             document.addEventListener('DOMContentLoaded', function() {
+             document.addEventListener('DOMContentLoaded', (() => {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
                 function gatherTableData() {
@@ -98,44 +97,42 @@
                         return response.blob();
                     })
                     .then(blob => {
-
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
-                        a.download = 'data.xlsx';
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url); 
+                        saveAs(blob, 'data.xlsx');
                     })
                     .catch(error => console.error('Error exporting data:', error));
                 }
     
-                document.getElementById('export-btn').addEventListener('click', function() {
+                document.getElementById('export-btn').addEventListener('click', (()=>{
                     const tableData = gatherTableData();
                     exportToExcel(tableData);
-                });
+                }));
 
+
+            // For on click and redirecting
               let rows = document.querySelectorAll('tbody tr');
               rows.forEach(row => {
-                row.addEventListener('click', function() {
-                  let url = this.getAttribute('data-url');
+                row.addEventListener('click', (()=>{
+                {
+                  let url = row.getAttribute('data-url');
                   if (url) {
                     window.location.href = url;
                   }
+                }
+                }))
                 });
-              });
 
               let rowsFooter = document.querySelectorAll('tfoot tr');
               rowsFooter.forEach(row => {
-                row.addEventListener('click', function() {
-                  let url = this.getAttribute('data-url');
-                  if (url) {
-                    window.location.href = url;
-                  }
+                row.addEventListener('click', (() => {
+                    {
+                        let url = row.getAttribute('data-url');
+                        if (url) {
+                          window.location.href = url;
+                        }
+                      }
+                }));
                 });
-              });
-            }); 
+                }));
 
         </script>
           

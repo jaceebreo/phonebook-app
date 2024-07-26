@@ -16,43 +16,31 @@ from django.shortcuts import redirect
 from django.db.models import Q
 from .models import REGION_CHOICES
 import openpyxl
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from io import BytesIO
 import json
 
 
 class ExportView(View):
     def post(self, request, *args, **kwargs):
-        # Read the data from the request
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid data format"}, status=400)
-
-        # Create a workbook and select the active worksheet
         workbook = openpyxl.Workbook()
         sheet = workbook.active
 
-        # Add headers
-        headers = ["ID", "Name", "Company", "Region", "Telephone", "Mobile"]
+        headers = ["ID", "Full Name", "Company", "Region", "Telephone", "Mobile"]
         sheet.append(headers)
 
-        # Append data to the worksheet
+        data = json.loads(request.body)
         for row in data:
             sheet.append(row)
 
-        # Save the workbook to an in-memory stream
-        output = BytesIO()
-        workbook.save(output)
-        output.seek(0)
-
-        # Set the response content type and headers
-        response = HttpResponse(
-            output,
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        response["Content-Disposition"] = "attachment; filename=data.xlsx"
-
+        with BytesIO() as output:
+            workbook.save(output)
+            output.seek(0)
+            response = HttpResponse(
+                output,
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+            response["Content-Disposition"] = "attachment; filename=data.xlsx"
         return response
 
 

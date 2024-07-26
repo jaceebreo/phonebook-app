@@ -1316,6 +1316,7 @@
     <script src="{% static 'smart_admin/js/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.min.js' %}"></script>
     <script src="{% static 'smart_admin/js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'smart_admin/js/formplugins/summernote/summernote.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script>
       toastr.options = {
         closeButton: true,
@@ -1340,23 +1341,22 @@
       src="{% static 'js/ajax_modal.js' %}"
     ></script>
     <script>
-      $(document).ready(function () {
-        const contactTable = document.getElementById("contact-table");
+      document.addEventListener("DOMContentLoaded", () => {
+        const contactTable = $("#contact-table").DataTable({
+          order: [[0, "desc"]],
+        });
 
         const regionFilter = document.getElementById("region-filter");
-        $(regionFilter).on("change", function () {
-          var filterValue = $(this).val();
-          if (filterValue) {
-            table
-              .columns(3)
-              .search("^" + filterValue + "$", true, false)
+        regionFilter.addEventListener("change", () => {
+          const regionFilterValue = regionFilter.value;
+          if (regionFilterValue) {
+            contactTable
+              .column(3)
+              .search(`^${regionFilterValue}$`, true, false)
               .draw();
           } else {
-            table.columns(3).search("").draw();
+            contactTable.column(3).search("").draw();
           }
-        });
-        var table = $(contactTable).DataTable({
-          order: [[0, "desc"]],
         });
       });
     </script>
